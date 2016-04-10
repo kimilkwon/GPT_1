@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
+[RequireComponent (typeof(Animator))]
 
 public class PlayerCtrl : MonoBehaviour {
-
     public const float ShieldCoolTime = 10;
     float Player_Speed = 2.0f;
     public int hp = 5;//플레이어 Hp
@@ -11,7 +11,14 @@ public class PlayerCtrl : MonoBehaviour {
     public GameObject laser = null;
     public GameObject shield = null;
 
-    public int Shield_Check =0;
+    public float move_speed = 5.0f;
+    Animator animator;
+   
+
+
+   
+    int Shield_Check =0;
+    int Shot_Check = 0;
     private ShieldUI SU = null;
     public void PlayerHit()//EnemyCtrl스크립트에서 충돌시 불러줄꺼임
     {
@@ -23,12 +30,8 @@ public class PlayerCtrl : MonoBehaviour {
         StartCoroutine(PlayerChange());
 
     }
-public void Awake()
-    {
-        SU = GameObject.Find("ShieldCoolTime").GetComponent<ShieldUI>();
-    }
+   
 
- 
     private IEnumerator PlayerChange()
     {
         SpriteRenderer sprite = GetComponentInChildren<SpriteRenderer>();
@@ -68,8 +71,11 @@ public void Awake()
         if (Input.GetKeyDown(KeyCode.Space))//스페이스바를 눌렀다면
         {
             StartCoroutine(Player_Attack());
+            
+
+
         }
-        if (Input.GetKeyDown(KeyCode.X))//스페이스바를 눌렀다면
+        if (Input.GetKeyDown(KeyCode.X))//x를 눌렀다면
         {
             StartCoroutine(Player_Shield());
         }
@@ -78,9 +84,19 @@ public void Awake()
     }
     public IEnumerator Player_Attack()
     {
-        Instantiate(laser, this.transform.position, Quaternion.identity);
-        yield return new WaitForSeconds(0.5f); // 레이저 무자비 생성 방지
-        yield return null;
+        if (Shot_Check == 0)
+        {
+            Shot_Check++;
+            animator.Play("SHOT");
+              
+
+            
+            Instantiate(laser, new Vector3(this.transform.position.x+0.5f, this.transform.position.y+0.7f, this.transform.position.z), Quaternion.identity);
+            yield return new WaitForSeconds(0.2f); // 레이저 무자비 생성 방지
+            yield return null;
+            Shot_Check--;
+        }
+        animator.Play("PLAY");
     }
     public IEnumerator Player_Shield()
     {
@@ -96,23 +112,34 @@ public void Awake()
             
         }
     }
-    void Player_Die()
+
+    IEnumerator Player_Die()
     {
-        transform.localScale = new Vector2(transform.localScale.x - 0.01f, transform.localScale.y - 0.01f);//스케일은 작아짐
+        transform.localScale = new Vector2(transform.localScale.x - 0.1f, transform.localScale.y - 0.1f);//스케일은 작아짐
         transform.Rotate(new Vector3(0, 0, 10));//계속 회전함
-        if (transform.localScale.x <= 0)//만약 스케일x값이 0보다 작다면
-        {
-            Destroy(this.gameObject);//자기 자신 삭제
-        }
+        yield return new WaitForSeconds(1.2f); // 쿨타임
+        yield return null;
+        Destroy(this.gameObject);//자기 자신 삭제
+       
     }
 
+
+    void Awake()
+    {
+        SU = GameObject.Find("ShieldCoolTime").GetComponent<ShieldUI>();
+        animator = GetComponent<Animator>();
+    }
+    public void start()
+    {
+       
+    }
     void Update()
     {
 
 
         if (Die == true)//Die가 참이라면
         {
-            Player_Die();
+           StartCoroutine(Player_Die());
         }
         else if (Die == false)
         {
@@ -122,4 +149,5 @@ public void Awake()
     }
 
  }
+
 
