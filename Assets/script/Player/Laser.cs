@@ -4,8 +4,10 @@ using System.Collections;
 public class Laser : MonoBehaviour
 {
     public float LaserSpeed = 12f;
-    
+    const int RED = 1;
+    const int BLUE = 0;
     Enemy EM = null;
+    PlayerCtrl PLAYER = null;
     BoxCollider2D bc = null;
     private ScoreCtrl SC = null;
     public int Laser_Kind  ;
@@ -16,6 +18,7 @@ public class Laser : MonoBehaviour
         bc = GetComponent<BoxCollider2D>();//BoxCollider2D를 넣어줌
         EM = GameObject.FindWithTag("ENEMY").GetComponent<Enemy>(); 
         SC = GameObject.Find("Center").GetComponent<ScoreCtrl>();
+        PLAYER = GameObject.Find("player_0(Clone)").GetComponent<PlayerCtrl>();
         animator = GetComponent<Animator>();
     }
     void OnTriggerEnter2D(Collider2D coll)//충돌 체크 함수
@@ -43,34 +46,48 @@ public class Laser : MonoBehaviour
     }
     public IEnumerator Laser_Destroy()
     {
-        
-        animator.Play("Laser_boom");
-        yield return new WaitForSeconds(0.2f);
-        Destroy(this.gameObject);
-
+        if (PLAYER.Change == false)
+        {
+            //animator.Play("Laser_boom");
+            yield return new WaitForSeconds(0.2f);
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            animator.Play("Laser_boomR");
+            yield return new WaitForSeconds(0.2f);
+            Destroy(this.gameObject);
+        }
+        yield return null;
+    }
+    public IEnumerator Laser_Set()
+    {
+        if (PLAYER.Change == false)
+        {
+          //  animator.Play("Laser_Play");
+            
+        }
+        else
+        {
+            animator.Play("Laser_PlayR");
+           
+        }
         yield return null;
     }
 
 
     public void Laser_Change()
     {
-        Laser_Kind = 1;
+        if (Laser_Kind == BLUE)
+            Laser_Kind = RED;
+        else
+            Laser_Kind = BLUE;
     }
     void Start()
     {
+        StartCoroutine(Laser_Set());
         Destroy(this.gameObject, 2f);
-        if(Laser_Kind == 1 )
-        {
-            SpriteRenderer sprite = GetComponentInChildren<SpriteRenderer>();
-
-            sprite.color = Color.red;
-        }
-        if (Laser_Kind == 0)
-        {
-            SpriteRenderer sprite = GetComponentInChildren<SpriteRenderer>();
-
-            sprite.color = Color.white;
-        }
+       
     }
 
     // Update is called once per frame

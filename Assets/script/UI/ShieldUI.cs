@@ -5,7 +5,7 @@ using System.Collections;
 public class ShieldUI : MonoBehaviour {
     public Image img;
     public UnityEngine.UI.Button button;
-    public float coolTime = 12.0f;
+    public float coolTime = 0.0f;
     public bool disableOnStart = false;
     public float leftTime = 0.0f;
 	// Use this for initialization
@@ -25,13 +25,19 @@ public class ShieldUI : MonoBehaviour {
    
     // Update is called once per frame
     void Update () {
-	if(leftTime>0)
+        Left_Time();
+
+    }
+
+    public void Left_Time()
+    {
+        if (leftTime > 0)
         {
             leftTime -= Time.deltaTime;
-            if(leftTime<0)
+            if (leftTime < 0)
             {
                 leftTime = 0;
-                if(button)
+                if (button)
                 {
                     button.enabled = true;
                 }
@@ -41,7 +47,7 @@ public class ShieldUI : MonoBehaviour {
                 img.fillAmount = ratio;
 
         }
-	}
+    }
     public bool Check_CoolTime()
     {
         if (leftTime > 0)

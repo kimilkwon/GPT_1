@@ -3,23 +3,30 @@ using System.Collections;
 [RequireComponent (typeof(Animator))]
 
 public class PlayerCtrl : MonoBehaviour {
-    public const float ShieldCoolTime = 10;
+    public const float ShieldCoolTime = 4.0f;
+    public const float BombCoolTime = 12.0f;
     float Player_Speed = 2.0f;
     public int hp = 5;//플레이어 Hp
     bool Die = false;//죽었는지 안죽었는지
-    bool Change = false;
-    public GameObject laser = null;
+    public bool Change = false;
+    public GameObject laser_B = null;
+    public GameObject laser_R = null;
+
     public GameObject shield = null;
 
     public float move_speed = 5.0f;
     Animator animator;
-   
 
 
-   
+    LaserChange LC = null;
+
     int Shield_Check =0;
     int Shot_Check = 0;
+	int Shield_Cool_Check =0;
+    int Bomb_Check = 0;
+
     private ShieldUI SU = null;
+    private ShieldUI BU = null;
     public void PlayerHit()//EnemyCtrl스크립트에서 충돌시 불러줄꺼임
     {
         if (hp <= 0)//만약 Hp가 0이하로 떨어지면
@@ -79,38 +86,134 @@ public class PlayerCtrl : MonoBehaviour {
         {
             StartCoroutine(Player_Shield());
         }
-
+        if (Input.GetKeyDown(KeyCode.C))//C를 눌렀다면
+        {
+            StartCoroutine(Player_Bomb());
+        }
+        if (Input.GetKeyDown(KeyCode.Z))//C를 눌렀다면
+        {
+            StartCoroutine(Player_Laser_Change());
+        }
 
     }
     public IEnumerator Player_Attack()
     {
-        if (Shot_Check == 0)
+        if (Shot_Check == 0 && Bomb_Check == 0)
         {
             Shot_Check++;
-            animator.Play("SHOT");
+            
               
 
-            
-            Instantiate(laser, new Vector3(this.transform.position.x+0.5f, this.transform.position.y+0.7f, this.transform.position.z), Quaternion.identity);
-            yield return new WaitForSeconds(0.2f); // 레이저 무자비 생성 방지
-            yield return null;
+			if (Shield_Check == 0) {
+				animator.Play ("player_attack");
+                Laser_Choice();
+                yield return new WaitForSeconds (0.2f); // 레이저 무자비 생성 방지
+				yield return null;
+				animator.Play("player_normal");
+			} 
+			else //쉴드 하고 공격할때 가운데에서 레이저 나가게끔.
+			{
+
+                Laser_Choice();
+                yield return new WaitForSeconds(0.2f); // 레이저 무자비 생성 방지
+				yield return null;
+			}
             Shot_Check--;
         }
-        animator.Play("PLAY");
+        
+    }
+
+    void Laser_Change()
+    {
+        if (Change == false)
+        {
+            Change = true;
+        }
+        else
+            Change = false;
+    }
+
+    void Laser_Choice()
+    {
+        if (Change == false)
+        {
+            if (Shield_Check == 0)
+            {
+                Instantiate(laser_B, new Vector3(this.transform.position.x + 0.5f, this.transform.position.y + 0.9f, this.transform.position.z), Quaternion.identity);
+            }
+            else
+            {
+                Instantiate(laser_B, new Vector3(this.transform.position.x, this.transform.position.y + 0.9f, this.transform.position.z), Quaternion.identity);
+            }
+        }
+        else
+        {
+            if (Shield_Check == 0)
+            {
+                Instantiate(laser_R, new Vector3(this.transform.position.x + 0.5f, this.transform.position.y + 0.9f, this.transform.position.z), Quaternion.identity);
+            }
+            else
+            {
+                Instantiate(laser_R, new Vector3(this.transform.position.x, this.transform.position.y + 0.9f, this.transform.position.z), Quaternion.identity);
+            }
+        }
     }
     public IEnumerator Player_Shield()
     {
        
-        if (Shield_Check == 0)
+		if (Shield_Cool_Check == 0 && Bomb_Check == 0)
         {
             Shield_Check++;
-            SU.leftTime = ShieldCoolTime;
+			Shield_Cool_Check++;
+			animator.Play("player_shield");
+            SU.coolTime = ShieldCoolTime * 2;
+            SU.leftTime = ShieldCoolTime*2;
             Instantiate(shield, this.transform.position, Quaternion.identity);
+			yield return new WaitForSeconds(ShieldCoolTime); // 쿨타임
+			animator.Play("player_normal");
+			Shield_Check --;
             yield return new WaitForSeconds(ShieldCoolTime); // 쿨타임
             yield return null;
-            Shield_Check--;
+			Shield_Cool_Check--;
             
         }
+
+    }
+
+    public IEnumerator Player_Laser_Change()
+    {
+
+        if (Shot_Check == 0 && Bomb_Check == 0)
+        {
+            Laser_Change();
+            LC.BoolTurn();
+             yield return new WaitForSeconds(0.4f); // 쿨타임
+            yield return null;
+
+        }
+
+    }
+
+    public IEnumerator Player_Bomb()
+    {
+
+        if (Bomb_Check == 0 && Shield_Check == 0 && Shot_Check ==0)
+        {
+            Bomb_Check++;
+           
+            animator.Play("player_shield");
+            BU.leftTime = BombCoolTime;
+            BU.coolTime = BombCoolTime;
+            // Instantiate(shield, this.transform.position, Quaternion.identity);
+            yield return new WaitForSeconds(BombCoolTime/3); // 쿨타임
+            animator.Play("player_normal");
+            yield return new WaitForSeconds(BombCoolTime / 3);
+            yield return new WaitForSeconds(BombCoolTime / 3);
+            yield return null;
+            Bomb_Check--;
+           
+        }
+
     }
 
     IEnumerator Player_Die()
@@ -127,6 +230,8 @@ public class PlayerCtrl : MonoBehaviour {
     void Awake()
     {
         SU = GameObject.Find("ShieldCoolTime").GetComponent<ShieldUI>();
+        BU = GameObject.Find("BombCoolTime").GetComponent<ShieldUI>();
+        LC = GameObject.Find("Bullet_RB").GetComponent<LaserChange>();
         animator = GetComponent<Animator>();
     }
     public void start()

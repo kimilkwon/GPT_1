@@ -11,7 +11,7 @@ public class Shield : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         Move();
-        Destroy(this.gameObject,4.0f);
+        Destroy(this.gameObject,3.9f);
     }
     void Move()
     {
