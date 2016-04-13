@@ -8,8 +8,10 @@ public class ShieldUI : MonoBehaviour {
     public float coolTime = 0.0f;
     public bool disableOnStart = false;
     public float leftTime = 0.0f;
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    BoxCollider2D bc = null;
+
+    void Start () {
 	if(img ==null)
         {
             img = gameObject.GetComponent<Image>();
@@ -22,10 +24,28 @@ public class ShieldUI : MonoBehaviour {
         if (disableOnStart)
             ResetCoolTime();
 	}
-   
+   void Awake() {
+        bc = GetComponent<BoxCollider2D>();
+    }
     // Update is called once per frame
     void Update () {
         Left_Time();
+
+    }
+    void OnTriggerEnter2D(Collider2D coll)//충돌 체크 함수
+    {
+        if (coll.gameObject.tag == "BULLET_R")
+        {
+           
+
+            Destroy(coll.gameObject);
+        }
+        if (coll.gameObject.tag == "BULLET_B")
+        {
+            
+            Destroy(coll.gameObject);
+        }
+
 
     }
 

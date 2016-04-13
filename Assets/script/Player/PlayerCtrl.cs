@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
+
 [RequireComponent (typeof(Animator))]
 
 public class PlayerCtrl : MonoBehaviour {
@@ -13,6 +15,7 @@ public class PlayerCtrl : MonoBehaviour {
     public GameObject laser_R = null;
 
     public GameObject shield = null;
+    BoxCollider2D bc = null;
 
     public float move_speed = 5.0f;
     Animator animator;
@@ -25,10 +28,14 @@ public class PlayerCtrl : MonoBehaviour {
 	int Shield_Cool_Check =0;
     int Bomb_Check = 0;
 
+    bool StartCheck = true;
+
     private ShieldUI SU = null;
-    private ShieldUI BU = null;
+    private ShieldUI BU = null;//필살기 ui
     public void PlayerHit()//EnemyCtrl스크립트에서 충돌시 불러줄꺼임
     {
+        
+       
         if (hp <= 0)//만약 Hp가 0이하로 떨어지면
         {
             Die = true;//Die는 참
@@ -37,7 +44,26 @@ public class PlayerCtrl : MonoBehaviour {
         StartCoroutine(PlayerChange());
 
     }
-   
+    void OnTriggerEnter2D(Collider2D coll)//충돌 체크 함수
+    {
+        if (coll.gameObject.tag == "BULLET_R")
+        {
+            hp -= 1;//주인공의 Hp를 하나 깎음 
+            Ctrl.HP -= 1;
+            PlayerHit();
+
+            Destroy(coll.gameObject);
+        }
+        if (coll.gameObject.tag == "BULLET_B")
+        {
+            hp -= 1;//주인공의 Hp를 하나 깎음 
+            PlayerHit();
+            Ctrl.HP -= 1;
+            Destroy(coll.gameObject);
+        }
+
+
+    }
 
     private IEnumerator PlayerChange()
     {
@@ -179,7 +205,15 @@ public class PlayerCtrl : MonoBehaviour {
         }
 
     }
+    public IEnumerator Player_Start()
+    {
 
+        yield return new WaitForSeconds(2.5f);
+        StartCheck = false;
+        yield return null;
+      
+
+    }
     public IEnumerator Player_Laser_Change()
     {
 
@@ -223,33 +257,46 @@ public class PlayerCtrl : MonoBehaviour {
         yield return new WaitForSeconds(1.2f); // 쿨타임
         yield return null;
         Destroy(this.gameObject);//자기 자신 삭제
-       
+        
+        AutoFade.LoadLevel("GAMEOVER", 2, 3, Color.black);
+
+
+
     }
 
 
-    void Awake()
+void Awake()
     {
         SU = GameObject.Find("ShieldCoolTime").GetComponent<ShieldUI>();
         BU = GameObject.Find("BombCoolTime").GetComponent<ShieldUI>();
         LC = GameObject.Find("Bullet_RB").GetComponent<LaserChange>();
-        animator = GetComponent<Animator>();
+        bc = GetComponent<BoxCollider2D>();
+     
+             animator = GetComponent<Animator>();
+        StartCoroutine(Player_Start());
     }
     public void start()
     {
-       
+        
     }
     void Update()
     {
 
-
-        if (Die == true)//Die가 참이라면
+        if (StartCheck == false)
         {
-           StartCoroutine(Player_Die());
+            if (Die == true)//Die가 참이라면
+            {
+                StartCoroutine(Player_Die());
+            }
+            else if (Die == false)
+            {
+                Player_Move();
+
+            }
         }
-        else if (Die == false)
+        else
         {
-            Player_Move();
-
+            transform.Translate(Vector2.up * Player_Speed * Time.deltaTime);//위로 speed만큼 이동
         }
     }
 

@@ -9,7 +9,7 @@ public class Laser : MonoBehaviour
     Enemy EM = null;
     PlayerCtrl PLAYER = null;
     BoxCollider2D bc = null;
-    private ScoreCtrl SC = null;
+    private ScoreTimeCtrl SC = null;
     public int Laser_Kind  ;
     bool die = false;
     Animator animator;
@@ -17,7 +17,7 @@ public class Laser : MonoBehaviour
     {
         bc = GetComponent<BoxCollider2D>();//BoxCollider2D를 넣어줌
         EM = GameObject.FindWithTag("ENEMY").GetComponent<Enemy>(); 
-        SC = GameObject.Find("Center").GetComponent<ScoreCtrl>();
+        SC = GameObject.Find("Center").GetComponent<ScoreTimeCtrl>();
         PLAYER = GameObject.Find("player_0(Clone)").GetComponent<PlayerCtrl>();
         animator = GetComponent<Animator>();
     }
@@ -33,13 +33,21 @@ public class Laser : MonoBehaviour
 
         }
 
-        if (coll.gameObject.tag == "BULLETS")
+        if (coll.gameObject.tag == "BULLET_R" && Laser_Kind==RED)
         {
             die = true;
            StartCoroutine(Laser_Destroy());
             
             SC.ScoreUp(10);
-           
+            Destroy(coll.gameObject);
+        }
+        if (coll.gameObject.tag == "BULLET_B" && Laser_Kind == BLUE)
+        {
+            die = true;
+            StartCoroutine(Laser_Destroy());
+
+            SC.ScoreUp(10);
+            Destroy(coll.gameObject);
         }
 
 
@@ -48,7 +56,7 @@ public class Laser : MonoBehaviour
     {
         if (PLAYER.Change == false)
         {
-            //animator.Play("Laser_boom");
+            animator.Play("Laser_boom");
             yield return new WaitForSeconds(0.2f);
             Destroy(this.gameObject);
         }
@@ -64,25 +72,19 @@ public class Laser : MonoBehaviour
     {
         if (PLAYER.Change == false)
         {
-          //  animator.Play("Laser_Play");
-            
+           animator.Play("Laser_Play");
+           Laser_Kind = BLUE;
         }
         else
         {
             animator.Play("Laser_PlayR");
-           
+            Laser_Kind = RED;
         }
         yield return null;
     }
 
 
-    public void Laser_Change()
-    {
-        if (Laser_Kind == BLUE)
-            Laser_Kind = RED;
-        else
-            Laser_Kind = BLUE;
-    }
+
     void Start()
     {
         StartCoroutine(Laser_Set());
@@ -93,9 +95,12 @@ public class Laser : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(die==false)
-        transform.Translate(Vector2.up * LaserSpeed * Time.deltaTime);
-   
+        if (die == false)
+        {
+            transform.Translate(Vector2.up * LaserSpeed * Time.deltaTime);
+            
+        }
+        
     }
 
 }

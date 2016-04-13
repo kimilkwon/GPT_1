@@ -2,30 +2,9 @@
 using System.Collections;
 
 
-public class Ctrl : MonoBehaviour {
- 
-    void Awake()
-    {
-        
-       
-       
-    }
-    // Use this for initialization
-    void Start () {
-     
-    }
-	
-	// Update is called once per frame
-	void Update () {
-        
-  
-   
-    }
+public static class Ctrl {
 
-
-
-    void Skill()
-    {
-
-    }
+    public static int Score_Static;
+    public static float Time_Static;
+    public static int HP;
 }
