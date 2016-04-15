@@ -7,9 +7,24 @@ public class Shield : MonoBehaviour {
 	void Start () {
 	
 	}
-	
-	// Update is called once per frame
-	void Update () {
+    void OnTriggerEnter2D(Collider2D coll)//충돌 체크 함수
+    {
+        if (coll.gameObject.tag == "BULLET_R")
+        {
+           
+            Destroy(coll.gameObject);
+        }
+        if (coll.gameObject.tag == "BULLET_B")
+        {
+          
+            Destroy(coll.gameObject);
+        }
+
+
+    }
+
+    // Update is called once per frame
+    void Update () {
         Move();
         Destroy(this.gameObject,3.9f);
     }

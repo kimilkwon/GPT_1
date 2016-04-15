@@ -5,7 +5,7 @@ using UnityEngine.UI;
 [RequireComponent (typeof(Animator))]
 
 public class PlayerCtrl : MonoBehaviour {
-    public const float ShieldCoolTime = 4.0f;
+    public const float ShieldCoolTime = 3.8f;
     public const float BombCoolTime = 12.0f;
     float Player_Speed = 2.0f;
     public int hp = 5;//플레이어 Hp
