@@ -5,33 +5,37 @@ using UnityEngine.UI;
 [RequireComponent (typeof(Animator))]
 
 public class PlayerCtrl : MonoBehaviour {
+
+
+    //쿨타임
     public const float ShieldCoolTime = 3.8f;
     public const float BombCoolTime = 12.0f;
+    //캐릭터 속성
     float Player_Speed = 2.0f;
     public int hp = 5;//플레이어 Hp
     bool Die = false;//죽었는지 안죽었는지
     public bool Change = false;
+    public float move_speed = 5.0f;
+    //캐릭터 스킬
     public GameObject laser_B = null;
     public GameObject laser_R = null;
-
     public GameObject shield = null;
     BoxCollider2D bc = null;
-
-    public float move_speed = 5.0f;
-    Animator animator;
-
-
-    LaserChange LC = null;
-
-    int Shield_Check =0;
+    int Shield_Check = 0;
     int Shot_Check = 0;
-	int Shield_Cool_Check =0;
+    int Shield_Cool_Check = 0;
     int Bomb_Check = 0;
-
+    LaserChange LC = null;
     bool StartCheck = true;
-
     private ShieldUI SU = null;
     private ShieldUI BU = null;//필살기 ui
+
+    //애니메이션 사운드
+    Animator animator;
+    AudioSource Audio = null;
+
+    public AudioClip HitSound = null;
+    public AudioClip ShotSound = null;
     public void PlayerHit()//EnemyCtrl스크립트에서 충돌시 불러줄꺼임
     {
         
@@ -40,7 +44,8 @@ public class PlayerCtrl : MonoBehaviour {
         {
             Die = true;//Die는 참
         }
-
+        Audio.clip = HitSound;
+        Audio.Play();
         StartCoroutine(PlayerChange());
 
     }
@@ -131,7 +136,9 @@ public class PlayerCtrl : MonoBehaviour {
               
 
 			if (Shield_Check == 0) {
-				animator.Play ("player_attack");
+                Audio.clip = ShotSound;
+                Audio.Play();
+                animator.Play ("player_attack");
                 Laser_Choice();
                 yield return new WaitForSeconds (0.2f); // 레이저 무자비 생성 방지
 				yield return null;
@@ -271,8 +278,9 @@ void Awake()
         BU = GameObject.Find("BombCoolTime").GetComponent<ShieldUI>();
         LC = GameObject.Find("Bullet_RB").GetComponent<LaserChange>();
         bc = GetComponent<BoxCollider2D>();
-     
-             animator = GetComponent<Animator>();
+        Audio = GetComponent<AudioSource>();
+
+        animator = GetComponent<Animator>();
         StartCoroutine(Player_Start());
     }
     public void start()
@@ -281,7 +289,7 @@ void Awake()
     }
     void Update()
     {
-
+        
         if (StartCheck == false)
         {
             if (Die == true)//Die가 참이라면
@@ -291,7 +299,7 @@ void Awake()
             else if (Die == false)
             {
                 Player_Move();
-
+             
             }
         }
         else

@@ -2,13 +2,19 @@
 using System.Collections;
 using UnityEngine.SceneManagement;
 public class Button : MonoBehaviour {
- 
 
+
+    StartSound sound =null;
+    void Awake()
+    {
+        sound = GameObject.Find("StartBG").GetComponent<StartSound>();
+    }
+    
 
     public void StartGUI()
     {
-        AutoFade.LoadLevel("SCENE_ONE", 1, 3, Color.black);
-        
+        AutoFade.LoadLevel("SCENE_ONE", 4, 3, Color.black);
+        StartCoroutine(sound.stop());
     }
     public void ManualGUI()
     {
