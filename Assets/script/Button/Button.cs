@@ -19,6 +19,7 @@ public class Button : MonoBehaviour {
     public void ManualGUI()
     {
         //SceneManager.LoadScene("MANUAL");
+        
         AutoFade.LoadLevel("MANUAL", 1, 3, Color.black);
     }
     public void ExitGUI()
@@ -26,10 +27,5 @@ public class Button : MonoBehaviour {
       //  animator.Play("ExitAnimaiton");
         Application.Quit();
     }
-    public void MaualGUI_Back()
-    {
-        SceneManager.LoadScene("StartScene");
-        //AutoFade.LoadLevel("StartScene", 1, 3, Color.black);
-     
-    }
+    
 }
