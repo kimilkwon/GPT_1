@@ -8,10 +8,12 @@ public class PlayerCtrl : MonoBehaviour {
 
 
     //쿨타임
+    
     public const float ShieldCoolTime = 3.8f;
     public const float BombCoolTime = 12.0f;
     //캐릭터 속성
     float Player_Speed = 2.0f;
+   
     public int hp = 5;//플레이어 Hp
     bool Die = false;//죽었는지 안죽었는지
     public bool Change = false;
@@ -33,9 +35,10 @@ public class PlayerCtrl : MonoBehaviour {
     //애니메이션 사운드
     Animator animator;
     AudioSource Audio = null;
-
+    float volume = 0.3f;
     public AudioClip HitSound = null;
     public AudioClip ShotSound = null;
+    public AudioClip ChangeSound = null;
     public void PlayerHit()//EnemyCtrl스크립트에서 충돌시 불러줄꺼임
     {
         
@@ -45,6 +48,7 @@ public class PlayerCtrl : MonoBehaviour {
             Die = true;//Die는 참
         }
         Audio.clip = HitSound;
+        Audio.volume = volume;
         Audio.Play();
         StartCoroutine(PlayerChange());
 
@@ -137,6 +141,7 @@ public class PlayerCtrl : MonoBehaviour {
 
 			if (Shield_Check == 0) {
                 Audio.clip = ShotSound;
+                Audio.volume = volume;
                 Audio.Play();
                 animator.Play ("player_attack");
                 Laser_Choice();
@@ -146,7 +151,9 @@ public class PlayerCtrl : MonoBehaviour {
 			} 
 			else //쉴드 하고 공격할때 가운데에서 레이저 나가게끔.
 			{
-
+                Audio.clip = ShotSound;
+                Audio.volume = volume;
+                Audio.Play();
                 Laser_Choice();
                 yield return new WaitForSeconds(0.2f); // 레이저 무자비 생성 방지
 				yield return null;
@@ -226,6 +233,10 @@ public class PlayerCtrl : MonoBehaviour {
 
         if (Shot_Check == 0 && Bomb_Check == 0)
         {
+            Audio.clip = ChangeSound;
+            
+            Audio.Play();
+           
             Laser_Change();
             LC.BoolTurn();
              yield return new WaitForSeconds(0.4f); // 쿨타임

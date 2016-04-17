@@ -1,31 +1,16 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class StartSound : MonoBehaviour {
-
-    //public AudioSource StartAudio;
-     static bool isPlaying = false;
+public class BGM : MonoBehaviour {
     float volume = 1.0f;
     // Use this for initialization
-    void Awake()
-    {
-
-    }
     void Start () {
-       
-
         DontDestroyOnLoad(transform.gameObject);
-        if (!isPlaying)
-        {
-            GetComponent<AudioSource>().Play();
-            isPlaying = true;
-        }
-
+        GetComponent<AudioSource>().Play();
     }
-
     public IEnumerator stop()
     {
-       while(volume >= 0.0f)
+        while (volume >= 0.0f)
         {
             GetComponent<AudioSource>().volume = volume;
             yield return new WaitForSeconds(0.25f);
@@ -35,9 +20,4 @@ public class StartSound : MonoBehaviour {
         yield return null;
         Debug.Log("SOUNDOFF");
     }
-	
-	
-	
-
-
 }

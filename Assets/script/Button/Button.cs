@@ -13,8 +13,9 @@ public class Button : MonoBehaviour {
 
     public void StartGUI()
     {
-        AutoFade.LoadLevel("SCENE_ONE", 4, 3, Color.black);
-        StartCoroutine(sound.stop());
+        AutoFade.LoadLevel("IntroScene", 4, 3, Color.black);
+        
+        
     }
     public void ManualGUI()
     {

@@ -13,10 +13,11 @@ public class Center : MonoBehaviour {
     Vector3 PlayerPosition = new Vector3(0, -8, 0); //시작 최종 위치 0,-4,0
     // Use this for initialization
     void Start () {
-       
-       Instantiate(Player, PlayerPosition, Quaternion.identity);
-       Instantiate(Enemy, EnemyPosition, Quaternion.identity);
+        
+        Instantiate(Player, PlayerPosition, Quaternion.identity);
+        Instantiate(Enemy, EnemyPosition, Quaternion.identity);
         StartCoroutine(TIMEUPDATE());
+
     }
 	void Awake()
     {

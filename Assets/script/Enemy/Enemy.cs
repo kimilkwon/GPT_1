@@ -22,15 +22,27 @@ public class Enemy : MonoBehaviour
     public bool StartCheck = true;
     public Collider2D Col2d;
 
+    public AudioSource Audio = null;
+    float volume = 0.3f;
+    public AudioClip HitSound = null;
+    public AudioClip ShotSound = null;
+    
+
     public void Enemy_Hit()
     {
         if (Enemy_Hp <= 0)//만약 Hp가 0이하로 떨어지면
         {
             Enemy_Die = true;//Die는 참
         }
+        Audio.clip = HitSound;
+        Audio.volume = volume;
+        Audio.Play();
         StartCoroutine(Enemy_Change());
     }
-  
+  void Awake()
+    {
+        Audio = GetComponent<AudioSource>();
+    }
 
 
     public IEnumerator Pattern_One(float Enemy_oneShoting)
@@ -40,6 +52,7 @@ public class Enemy : MonoBehaviour
         {
             for (int i = 0; i < Enemy_oneShoting; i++)
             {
+               
                 GameObject obj;
                 Bullet_Kind = Random.Range(0, 2);
                 obj = (GameObject)Instantiate(Enemy_Bullet[Bullet_Kind], this.transform.position, Quaternion.identity);
@@ -50,6 +63,10 @@ public class Enemy : MonoBehaviour
             //지정해둔 각도의 방향으로 모든 총탄을 날리고, 날아가는 방향으로 방향회전을 해줍니다.
 
             yield return new WaitForSeconds(PatternOne_DelayTime);
+
+            Audio.clip = ShotSound;
+            Audio.volume = volume + 0.3f;
+            Audio.Play();
         } while ( true);
     }
     public IEnumerator Pattern_Two(float Enemy_oneShoting)
@@ -68,18 +85,22 @@ public class Enemy : MonoBehaviour
                 obj.GetComponent<Rigidbody2D>().gravityScale = 0.2f;
             }
 
-           
 
             yield return new WaitForSeconds(PatternTwo_DelayTime);
+
+            Audio.clip = ShotSound;
+            Audio.volume = volume + 0.3f;
+            Audio.Play();
         } while ( true);
     }
     public IEnumerator Pattern_Three(float Enemy_oneShoting)
     {
-
+        
         do
         {
             for (int i = 0; i < Enemy_oneShoting; i++)
             {
+              
                 GameObject obj;
                 Bullet_Kind = Random.Range(0, 2);
                 obj = (GameObject)Instantiate(Enemy_Bullet[Bullet_Kind], this.transform.position, Quaternion.identity);
@@ -87,10 +108,13 @@ public class Enemy : MonoBehaviour
                 obj.transform.Rotate(new Vector3(0f, 0f, 180 * i / Enemy_oneShoting - 90));
                 obj.GetComponent<Rigidbody2D>().gravityScale = 0.1f;
             }
-
+            
 
 
             yield return new WaitForSeconds(PatternThree_DelayTime);
+            Audio.clip = ShotSound;
+            
+            Audio.Play();
         } while (true);
     }
 
