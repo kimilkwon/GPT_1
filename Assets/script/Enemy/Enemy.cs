@@ -26,8 +26,21 @@ public class Enemy : MonoBehaviour
     float volume = 0.3f;
     public AudioClip HitSound = null;
     public AudioClip ShotSound = null;
-    
 
+    void OnTriggerEnter2D(Collider2D coll)//충돌 체크 함수
+    {
+        if (coll.gameObject.tag == "BOOM")
+        {
+           
+            Enemy_Hp -= 3;// Hp를 3 깎음 
+            Enemy_Hit();
+           
+
+
+        }
+
+
+    }
     public void Enemy_Hit()
     {
         if (Enemy_Hp <= 0)//만약 Hp가 0이하로 떨어지면

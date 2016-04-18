@@ -21,6 +21,7 @@ public class PlayerCtrl : MonoBehaviour {
     //캐릭터 스킬
     public GameObject laser_B = null;
     public GameObject laser_R = null;
+    public GameObject Boom = null;
     public GameObject shield = null;
     BoxCollider2D bc = null;
     int Shield_Check = 0;
@@ -257,12 +258,18 @@ public class PlayerCtrl : MonoBehaviour {
             BU.leftTime = BombCoolTime;
             BU.coolTime = BombCoolTime;
             // Instantiate(shield, this.transform.position, Quaternion.identity);
-            yield return new WaitForSeconds(BombCoolTime/3); // 쿨타임
+            Instantiate(Boom, new Vector3(0,-10,0), Quaternion.identity);
+            bc.isTrigger = true;
+            yield return new WaitForSeconds(BombCoolTime/4); // 쿨타임
             animator.Play("player_normal");
-            yield return new WaitForSeconds(BombCoolTime / 3);
-            yield return new WaitForSeconds(BombCoolTime / 3);
-            yield return null;
+
+            yield return new WaitForSeconds(BombCoolTime / 4);
             Bomb_Check--;
+            yield return new WaitForSeconds(BombCoolTime / 4);
+            yield return new WaitForSeconds(BombCoolTime / 4);
+            bc.isTrigger = false;
+            yield return null;
+            
            
         }
 
