@@ -13,7 +13,7 @@ public class ScoreTimeCtrl : MonoBehaviour {
     public Text Hp_Text = null;
     // Use this for initialization
     void Start () {
-        Ctrl.HP = 5;
+       
         ScoreUp(Ctrl.Score_Static);
         TimeUp(Ctrl.Time_Static);
         Hp_Center(Ctrl.HP);

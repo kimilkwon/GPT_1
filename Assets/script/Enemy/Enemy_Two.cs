@@ -15,11 +15,11 @@ public class Enemy_Two : Enemy {
     void Start()
     {
         Enemy_BulletSpeed = 50f;
-        Enemy_Hp = 30;
+        Enemy_Hp = 12;
         Enemy_MoveSpeed = 3.0f;
         PatternOne_DelayTime = 2.0f;
-        PatternTwo_DelayTime = 1.5f;
-        PatternThree_DelayTime = 1.5f;
+        PatternTwo_DelayTime = 2.0f;
+        PatternThree_DelayTime =3.0f;
         Enemy_Move();
       
     }
@@ -29,7 +29,7 @@ public class Enemy_Two : Enemy {
     {
         if (StartCheck == false)
         {
-            Enemy_Die_Check("SCENE_TWO");
+            Enemy_Die_Check("SCENE_THREE");
 
 
             PatternDeltaTime += Time.deltaTime;

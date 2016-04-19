@@ -21,7 +21,7 @@ public class Button : MonoBehaviour {
     {
         //SceneManager.LoadScene("MANUAL");
         
-        AutoFade.LoadLevel("MANUAL", 1, 3, Color.black);
+        AutoFade.LoadLevel("MANUAL", 1, 1, Color.black);
     }
     public void ExitGUI()
     {

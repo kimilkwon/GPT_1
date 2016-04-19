@@ -14,7 +14,7 @@ public class PlayerCtrl : MonoBehaviour {
     //캐릭터 속성
     float Player_Speed = 2.0f;
    
-    public int hp = 5;//플레이어 Hp
+    private int hp ;//플레이어 Hp
     bool Die = false;//죽었는지 안죽었는지
     public bool Change = false;
     public float move_speed = 5.0f;
@@ -40,6 +40,8 @@ public class PlayerCtrl : MonoBehaviour {
     public AudioClip HitSound = null;
     public AudioClip ShotSound = null;
     public AudioClip ChangeSound = null;
+    public AudioClip BombSound = null;
+    public AudioClip ShieldSound = null;
     public void PlayerHit()//EnemyCtrl스크립트에서 충돌시 불러줄꺼임
     {
         
@@ -209,6 +211,9 @@ public class PlayerCtrl : MonoBehaviour {
 			animator.Play("player_shield");
             SU.coolTime = ShieldCoolTime * 2;
             SU.leftTime = ShieldCoolTime*2;
+            Audio.clip = ShieldSound;
+            Audio.volume = volume;
+            Audio.Play();
             Instantiate(shield, this.transform.position, Quaternion.identity);
 			yield return new WaitForSeconds(ShieldCoolTime); // 쿨타임
 			animator.Play("player_normal");
@@ -254,13 +259,17 @@ public class PlayerCtrl : MonoBehaviour {
         {
             Bomb_Check++;
            
-            animator.Play("player_shield");
+            animator.Play("player_bomb");
             BU.leftTime = BombCoolTime;
             BU.coolTime = BombCoolTime;
             // Instantiate(shield, this.transform.position, Quaternion.identity);
-            Instantiate(Boom, new Vector3(0,-10,0), Quaternion.identity);
+            Audio.clip = BombSound;
+            Audio.volume = volume;
+            Audio.Play();
             bc.isTrigger = true;
-            yield return new WaitForSeconds(BombCoolTime/4); // 쿨타임
+            yield return new WaitForSeconds(BombCoolTime/8); // 쿨타임
+            Instantiate(Boom, new Vector3(0, -10, 0), Quaternion.identity);
+            yield return new WaitForSeconds(BombCoolTime / 8);
             animator.Play("player_normal");
 
             yield return new WaitForSeconds(BombCoolTime / 4);
@@ -301,13 +310,13 @@ void Awake()
         animator = GetComponent<Animator>();
         StartCoroutine(Player_Start());
     }
-    public void start()
+    public void Start()
     {
-        
+        hp = Ctrl.HP;
     }
     void Update()
     {
-        
+      
         if (StartCheck == false)
         {
             if (Die == true)//Die가 참이라면

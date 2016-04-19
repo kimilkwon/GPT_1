@@ -1,52 +1,53 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Enemy_One : Enemy {
+public class Enemy_Final : Enemy
+{
 
-
+    // Use this for initialization
 
     float PatternDeltaTime = 0.0f;
-    float EnemyPatternTime = 30.0f;
+    float EnemyPatternTime = 2.0f;
 
     void Awake()
     {
         StartCoroutine(Enemy_Start());
-        
-}
+
+    }
     // Use this for initialization
-    void Start () {
+    void Start()
+    {
         Enemy_BulletSpeed = 50f;
-        Enemy_Hp =10;
-        Enemy_MoveSpeed = 2.5f;
+        Enemy_Hp = 30;
+        Enemy_MoveSpeed = 3.55f;
         PatternOne_DelayTime = 2.0f;
-        PatternTwo_DelayTime = 2.0f;
-        PatternThree_DelayTime = 3.0f;
+        PatternTwo_DelayTime = 1.0f;
+        PatternThree_DelayTime = 1.5f;
         Enemy_Move();
-        
+
     }
 
     // Update is called once per frame
-    void Update() {
+    void Update()
+    {
         if (StartCheck == false)
-        { 
-        Enemy_Die_Check("SCENE_TWO");
-        
+        {
+            Enemy_Die_Check("CLEAR");
+
 
             PatternDeltaTime += Time.deltaTime;
             if (PatternDeltaTime > EnemyPatternTime)
             {
                 PatternDeltaTime = -10000.0f; //계속해서 패턴 2를 코루틴 하는걸 방지하기 위해 한번 만 코루틴 해도 계속 생성됨.
-                this.StartCoroutine("Pattern_Two", 10f);
+                this.StartCoroutine("Pattern_Two", 23.0f);
             }
-        Enemy_MoveCtrl();
+            Enemy_MoveCtrl();
         }
         else
         {
-            transform.Translate(Vector2.down* Enemy_MoveSpeed * Time.deltaTime);//위로 speed만큼 이동
+            transform.Translate(Vector2.down * Enemy_MoveSpeed * Time.deltaTime);//위로 speed만큼 이동
         }
 
 
     }
-
- 
 }

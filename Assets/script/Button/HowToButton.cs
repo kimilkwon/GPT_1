@@ -6,7 +6,7 @@ public class HowToButton : MonoBehaviour {
     public void MaualGUI_Back()
     {
 
-        AutoFade.LoadLevel("StartScene", 2, 3, Color.black);
+        AutoFade.LoadLevel("StartScene", 1, 1, Color.black);
     }
    
 }
